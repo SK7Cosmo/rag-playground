@@ -1,0 +1,12 @@
+{
+    "sentences": [
+    "Retrieval-Augmented Generation (RAG) enhances language models by integrating relevant external documents into the generation process.",
+    "RAG systems retrieve information from large databases to provide contextual answers beyond what is stored in the model.",
+    "By merging retrieved text with generative models, RAG overcomes the limitations of static training data.",
+    "Media companies combine external data feeds with digital editing tools to optimize broadcast schedules.",
+    "Financial institutions analyze market data and use automated report generation to guide investment decisions.",
+    "Healthcare analytics platforms integrate patient records with predictive models to generate personalized care plans.",
+    "Bananas are popular fruits that are rich in essential nutrients such as potassium and vitamin C."
+]
+
+}

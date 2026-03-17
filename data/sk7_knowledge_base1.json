@@ -1,0 +1,32 @@
+{
+    "doc1": {
+        "title": "Agentic AI Overview",
+        "content": [
+            "Simple AI systems only provide ideas [planning].",
+            "Agentic AI systems execute the idea and take alternative actions if necessary until the goal succeeds.",
+            "LLMs act as the brain and tools act as the body."
+        ]
+    },
+    "doc2": {
+        "title": "Agentic AI Workflow",
+        "content": [
+            "1. Interpret the environment to get raw input",
+            "2. Process the input",
+            "3. Decide on possible actions [Thought]",
+            "4. Execute the plan [Action]",
+            "5. Learn and improve [Observe]"
+        ]
+    },
+    "doc3": {
+        "title": "Primary Components of Agentic AI",
+        "content": [
+            "1. Deployment Infrastructure",
+            "2. Foundation LLMs",
+            "3. Memory",
+            "4. External Tools",
+            "5. Orchestration and Observability Tools",
+            "6. Guardrails",
+            "7. User Interface"
+        ]
+    }
+}
