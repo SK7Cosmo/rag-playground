@@ -1,49 +1,25 @@
 # Importing packages
 import json
 
-from utility import get_llm_response
-from utility import retrieve_top_result_by_keyword_overlap, retrieve_top_results_by_distance
-from utility import load_and_chunk_dataset, build_chroma_collection
+from rag.llm import get_llm_response
+from ingestion.chunking import load_and_chunk_dataset
+from ingestion.chroma_store import build_chroma_collection
+from rag.retrieval import retrieve_top_result_by_keyword_overlap, retrieve_top_results_by_distance
+from rag.llm import generate_naive_response, generate_rag_response
 
-# Define Knowledge Base for RAG retrieval
+import warnings
+warnings.filterwarnings('ignore')
+
+from transformers.utils import logging
+logging.set_verbosity_error()
+
+# Define Knowledge Base for RAG retrieval by keyword overlap
 with open("data/sk7_knowledge_base1.json", "r") as file_obj:
 	KNOWLEDGE_BASE = json.load(file_obj)
 
-# Define Knowledge Base for vector database experiment
+# Define Knowledge Base for RAG retrieval by distance
 with open("data/sk7_knowledge_base3.json", "r") as file_obj:
 	dataset = json.load(file_obj)
-
-
-def generate_naive_response(query):
-	"""
-	Using LLM's pretrained knowledge base to respond to the query
-	"""
-	prompt = f"Answer directly the following query: {query}"
-	return get_llm_response(prompt)
-
-
-def generate_rag_response(query, rag_content):
-	"""
-	Using the custom knowledge base to enrich the user prompt
-	and customize the LLM's response
-
-	If no info relevant to the query found in the knowledge base,
-	avoids hallucination and politely refuses to answer
-	"""
-	if rag_content:
-		prompt = f"Question: {query}\nAnswer using only the following context:\n"
-		for fact in rag_content:
-			prompt += f"- {fact}\n"
-		prompt += "Also, Specify that you have made use of preconfigured Knowledge Base in new line"
-		prompt += "\nAnswer: "
-
-	else:
-		prompt = f"""
-		No relevant information was retrieved for the question below.
-		Politely refuse to answer. Question: {query}
-		"""
-
-	return get_llm_response(prompt)
 
 
 if __name__ == "__main__":
@@ -89,15 +65,32 @@ if __name__ == "__main__":
 	elif agent_choice == 3:
 		# Sample Queries
 		"""
-		What are some recent technological breakthroughs?
+		What are some recent technological breakthroughs? ; Filter => Education
 		"""
+
+		filter_choice = input("\nDo you want to filter by category (y/n)?: ")
+		if filter_choice.lower() == 'y':
+			categories = input("\nEnter the Category filter: ").lower()
+		elif filter_choice.lower() == 'n':
+			categories = None
+		else:
+			print("\nInvalid choice")
+			quit()
+
 		rag_content = []
 
-		retrieved_chunks = retrieve_top_results_by_distance(query=query, collection=collection, top_k=3, distance_threshold=1.0)
+		retrieved_chunks = retrieve_top_results_by_distance(
+			query=query,
+			collection=collection,
+			categories=[categories],
+			top_k=3)
 
 		for chunk in retrieved_chunks:
 			rag_content.append(chunk['content'])
-		print("\nRAG Agent's Response [Distance based]:\n\n", generate_rag_response(query=query, rag_content=rag_content))
+		print("\nRAG Agent's Response [Distance based]:\n\n", generate_rag_response(
+																					query=query,
+																					rag_content=rag_content
+																					))
 
 	else:
 		print("\nInvalid choice")

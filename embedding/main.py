@@ -2,16 +2,16 @@ import json
 
 import numpy as np
 
-from utility import build_vocab, create_bow_vector
-from utility import create_sentence_embeddings, compute_cosine_similarity
-from utility import compute_tsne_embeddings, plot_embeddings
+from bow_vectorizer import build_vocab, create_bow_vector
+from sentence_embedder import create_sentence_embeddings, compute_cosine_similarity
+from tsne_visualizer import compute_tsne_embeddings, plot_embeddings
 
 # Define Knowledge Base for text representation - query matching experiment
-with open("data/sk7_knowledge_base2.json", "r") as file_obj:
+with open("../data/sk7_knowledge_base2.json", "r") as file_obj:
 	KNOWLEDGE_BASE = json.load(file_obj)
 
 # Define metadata for the t-SNE plot experiment
-with open("data/tsne_plot_metadata.json", "r") as file_obj:
+with open("../data/tsne_plot_metadata.json", "r") as file_obj:
 	tsne_plot_metadata = json.load(file_obj)
 
 
