@@ -1,7 +1,7 @@
 # Importing Packages
 import json
 from utility import load_and_chunk_dataset
-from  utility import build_chroma_collection, delete_documents_with_keyword
+from utility import build_chroma_collection, delete_documents_with_keyword
 
 # Define Knowledge Base for vector database experiment
 with open("data/sk7_knowledge_base3.json", "r") as file_obj:
@@ -12,7 +12,7 @@ if __name__ == "__main__":
 	master_chunks = load_and_chunk_dataset(data=dataset)
 	print("\nLoaded the dataset and created", len(master_chunks), "chunk(s) from dataset.\n")
 
-	collection = build_chroma_collection(master_chunks)
+	collection = build_chroma_collection(chunks=master_chunks, collection_name="rag_collection")
 	total_chunk_docs = collection.count()
 	print("\nChromaDB collection created with", total_chunk_docs, "chunk document(s).")
 

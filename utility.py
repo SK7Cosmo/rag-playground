@@ -85,11 +85,11 @@ def get_llm_response(user_prompt):
 		return f"An error occurred: {e}"
 
 
-def perform_rag_retrieval(query, documents):
+def retrieve_top_result_by_keyword_overlap(query, documents):
 	"""
-	Gets the document that closely matches for the input query
+	Retrieves the document that closely matches with the input query
 	Naive way of keyword match technique is used to build a less complex pipeline
-	Only the best matching document is used to augment the user prompt
+	Only the best matching document is returned
 	"""
 
 	# Split the query into lowercase words and store them in a set
@@ -114,6 +114,38 @@ def perform_rag_retrieval(query, documents):
 
 	# Return the best document, or None if nothing matched
 	return documents.get(best_doc_id)
+
+
+def retrieve_top_results_by_distance(query, collection, top_k=3, distance_threshold=1.0):
+	"""
+		Retrieves the top_k chunks from Chroma 'collection' that are most relevant to the given query.
+		Returns a list of retrieved chunks, each containing 'chunk' text, 'doc_id', and 'distance'.
+		Filters the chunk only if distance metric is lesser than the threshold
+	"""
+
+	# Search for top_k results matching the user's query
+	results = collection.query(
+		query_texts=[query],
+		n_results=top_k
+	)
+
+	retrieved_chunks = []
+
+	# Safeguard in case no results are found
+	if not results['documents'] or not results['documents'][0]:
+		return retrieved_chunks
+
+	# Gather each retrieved chunk, along with its distance score
+	for i in range(len(results['documents'][0])):
+		if results['distances'][0][i] > distance_threshold:
+			continue 	# Not matching enough with the query
+		retrieved_chunks.append({
+			"content": results['documents'][0][i],
+			"doc_id": results['ids'][0][i],
+			"distance": results['distances'][0][i]
+		})
+
+	return retrieved_chunks
 
 
 def preprocess_string(text):
